@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
 const Content = () => {
     const handleNameChange = () => {
         const names = ["Fulanny", "Oyee", "Eef"];
         const int = Math.floor(Math.random() * 3);
     
-        return names[int];
+        return names[int]
       };
     
   return (
@@ -16,4 +16,4 @@ const Content = () => {
   )
 }
 
-export default Content
+export default Content;
