@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import './content.css';
 
 const Content = () => {
     const handleNameChange = () => {
@@ -7,12 +8,20 @@ const Content = () => {
     
         return names[int]
       };
-    
+    const handleClick = () => {
+      console.log("You clicked")
+    }
+
+    const handleCLick2 = (name) => {
+      console.log(`${name} was clicked`);
+    }
   return (
     
-    <div>
+    <main className='student'>
       <h1>{handleNameChange()}</h1>
-    </div>
+      <button onClick={handleClick}>Click me</button>
+      <button onDoubleClick={() => {handleCLick2("Hayzed")}}>Click me</button>
+    </main>
   )
 }
 
