@@ -7,7 +7,7 @@ import Header from './Header';
 function App() {
   return (
     <div className="App">
-        <Header/>
+        <Header title = "welcome to props"/>
         <Content/>
         <Footer/>
         
