@@ -125,7 +125,7 @@ button:focus, button:hover {
 
 }
 
-.searchForm input [type='text'] {
+.searchForm input[type='text'] {
   flex-grow: 1;
   max-width: 100%;
   min-height: 48px;
