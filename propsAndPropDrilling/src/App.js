@@ -1,94 +1,121 @@
-
-import AddItem from './AddItem';
-import './App.css';
-import Content from './Content';
-import Footer from './Footer';
-import Header from './Header';
-import {useState} from 'react';
-import SearchItem from './SearchItem';
+import { useState, useEffect } from "react";
+import Header from "./Header";
+import AddItem from "./AddItem";
+import SearchItem from "./SearchItem";
+import Content from "./Content";
+import Footer from "./Footer";
+import apiRequest from "./apiRequest";
 
 function App() {
 
-  const [items, setItems] = useState(JSON.parse(localStorage.getItem("shoppingList")));
+  // API
+  const API_URL = "http://localhost:3500/items";
 
-  const [newItem, setNewItem] = useState('');
+  const [items, setItems] = useState([]);
+  const [fetchError, setFetchError] = useState(null)
+  const [newItem, setNewItem] = useState("");
+  const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [search, setSearch] = useState('');
+  useEffect(() => {
 
-  const  setAndSaveItems = (newItems) => {
-    setItems(newItems);
-    localStorage.setItem("shoppingList", JSON.stringify(newItems));
-    return;
-  }
+    const fetchingApi = async () => {
+      try {
+        const response = await fetch(API_URL);
 
-  const addItem = (item) => {
-    const id = items.length? items[items.length - 1].id + 1 : 1;
-    const myNewItem = {id, checked: false, item}
-    const listItems = [...items, myNewItem]
+        if (!response.ok) throw Error('The data is not accessible!');
+        const listItems = await response.json();
+        setItems(listItems)
 
-    setAndSaveItems(listItems)
-     
-  }
+        setFetchError(null);
+      } catch (err) {
+        setFetchError(err.message)
+      } finally {
+        setIsLoading(false)
+      }
 
-const handleCheck = (id) => {
-
-// console.log(`Key: ${id}`)
-
-const listItems = items.map((item) => item.id === id? {...item, checked: !item.checked} : item);
-
-setAndSaveItems(listItems);
-// setItems(listItems);
-
-// localStorage.setItem("shoppingList", JSON.stringify(listItems));  
-};
-
-const handleDelete = (value) => {
-const listItems = items.filter((item) => item.id !== value);
-setItems(listItems);
-
-// console.log(listItems)
-
-};
-
-const handleSubmit = (e) => {
-  e.preventDefault()
-  if (!newItem) return;
-  addItem(newItem)
-  setNewItem('');
+    }
+    setTimeout(() => {
+      (async () => await fetchingApi())()
+    }, 2000);
 
 
-}
+  }, []);
+
+  const addItem = async (item) => {
+    const id = items.length ? items[items.length - 1].id + 1 : 1;
+    const myNewItem = { id, checked: false, item };
+    const listItems = [...items, myNewItem];
+    setItems(listItems);
+
+    // POST
+    const postOption = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(myNewItem)
+    }
+
+    const result = await apiRequest(API_URL, postOption);
+    if(result) setFetchError(result)
+  };
+
+  const handleCheck = async (id) => {
+    const listItems = items.map((item) =>
+      item.id === id ? { ...item, checked: !item.checked } : item
+    );
+    setItems(listItems);
+
+    // UPDATE
+    const myItem = listItems.filter((item) => item.id === id)
+    const updateOptions = {
+      method: "PATCH",
+      headers: {"content-type": "Application/json"},
+      body: JSON.stringify({checked: myItem[0].checked})
+    }
+
+    const reUrl = `${API_URL}/${id}`
+    const result = await apiRequest (reUrl, updateOptions)
+    if (result) setFetchError(result)
+    
+  };
+
+  const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id);
+    setItems(listItems);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!newItem) return;
+    addItem(newItem);
+    setNewItem("");
+  };
 
   return (
     <div className="App">
-        <Header title= "Welcome to props"/>
+      <Header title="Grocery List" />
+      <SearchItem search={search} setSearch={setSearch} />
+      <AddItem
+        newItem={newItem}
+        setNewItem={setNewItem}
+        handleSubmit={handleSubmit}
+      />
 
-        <SearchItem
-          search = {search}
-          setSearch = {setSearch}
+      <main className="student">
+        {isLoading && <p>Loading items...</p>}
+       {fetchError && <p style={{color: "red"}}> {`Error: ${fetchError}`}</p>}
+        {!fetchError && !isLoading && <Content
+          items={items.filter((item) =>
+            item.item.toLowerCase().includes(search.toLowerCase())
+          )}
+          handleCheck={handleCheck}
+          handleDelete={handleDelete}
+        />}
 
-        
-        
-        
-        />
-
-        <AddItem
-          newItem = {newItem}
-          setNewItem={setNewItem}
-          handleSubmit={handleSubmit}
-        />
-        
-
-        <Content
-        items={items.filter((item) => 
-          item.item.toLowerCase().includes(search.toLocaleLowerCase()))
-          }
-          
-        handleCheck={handleCheck}
-        handleDelete = {handleDelete}/>
-        <Footer length={items.length}/>
-        
-        
+      </main>
+      <Footer length={items.length} />
     </div>
   );
 }
