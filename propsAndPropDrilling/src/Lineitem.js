@@ -2,7 +2,7 @@ import { FaTrash } from "react-icons/fa";
 
 const Lineitem = ({ item, handleCheck, handleDelete }) => {
   return (
-    <li className='item' key={item.id}>
+    <li className="item" key={item.id}>
       <input type="checkbox"
         onChange={() => handleCheck(item.id)}
         checked={item.checked} />
