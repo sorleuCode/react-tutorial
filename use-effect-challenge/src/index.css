@@ -1,0 +1,30 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 22px;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Roboto", "san-serif";
+}
+
+form {
+  width: 100%;
+  position: fixed;
+}
+
+button {
+  width: 33.33%;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button.selected {
+  background-color: #000;
+  color: white;
+}
