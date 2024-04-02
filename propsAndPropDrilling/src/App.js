@@ -52,7 +52,7 @@ function App() {
     const postOption = {
       method: "POST",
       headers: {
-        "content-type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(myNewItem)
     }
@@ -62,16 +62,14 @@ function App() {
   };
 
   const handleCheck = async (id) => {
-    const listItems = items.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item
-    );
+    const listItems = items.map((item) =>item.id === id ? { ...item, checked: !item.checked } : item);
     setItems(listItems);
 
     // UPDATE
     const myItem = listItems.filter((item) => item.id === id)
     const updateOptions = {
       method: "PATCH",
-      headers: {"content-type": "Application/json"},
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({checked: myItem[0].checked})
     }
 
@@ -81,9 +79,22 @@ function App() {
     
   };
 
-  const handleDelete = (id) => {
+
+  const handleDelete = async (id) => {
     const listItems = items.filter((item) => item.id !== id);
     setItems(listItems);
+
+    // DELETE
+
+    const delOption = {
+      method: "DELETE"
+    }
+
+    const reUrl = `${API_URL}/${id}`;
+    const result = await apiRequest (reUrl, delOption);
+    if (result) setFetchError(result)
+
+
   };
 
   const handleSubmit = (e) => {
