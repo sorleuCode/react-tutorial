@@ -17,6 +17,8 @@ function App() {
     <Nav/>
     <Routes>
       <Route path="/" element={<Home/>}/>
+      <Route path="/about" element={<About/>}/>
+      <Route path="/post-page" element={<PostPage/>}/>
     </Routes>
     <Footer/>
       
