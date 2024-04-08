@@ -124,8 +124,8 @@ body {
 .nav li:focus a {
   cursor: pointer;
 }
-
- .Home, .NewPost, .PostPage, .About, .Missing {
+ 
+.Home, .NewPost, .PostPage, .About, .Missing {
   width: 100%;
   flex-grow: 1;
   padding: 1rem;
@@ -265,7 +265,7 @@ body {
 @media only screen and (min-width: 992px) {
 
   .Header svg {
-    font-size: 3rem;
- }
+    font-size: rem;
+  }
 
 }
