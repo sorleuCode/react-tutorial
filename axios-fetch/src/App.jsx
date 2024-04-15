@@ -9,49 +9,14 @@ import NewPost from "./NewPost";
 import PostPage from "./PostPage";
 import { useState, useEffect } from "react";
 import { format } from 'date-fns';
+import api from "./api/posts";
 
 
 
 
 function App() {
 
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "My first Post",
-      dateTime: "April 04, 2024 11:01:24 AM",
-      body: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid quod, distinctio labore odit, beatae ipsum quo temporibus, delectus tempore tempora repellat expedita alias facilis. Odit vero numquam dolores iste itaque."
-
-    },
-    {
-      id: 2,
-      title: "My second Post",
-      dateTime: "April 04, 2024 11:01:24 AM",
-      body: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid quod, distinctio labore odit, beatae ipsum quo temporibus, delectus tempore tempora repellat expedita alias facilis. Odit vero numquam dolores iste itaque."
-
-    },
-    {
-      id: 3,
-      title: "My third Post",
-      dateTime: "April 04, 2024 11:01:24 AM",
-      body: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid quod, distinctio labore odit, beatae ipsum quo temporibus, delectus tempore tempora repellat expedita alias facilis. Odit vero numquam dolores iste itaque."
-
-    },
-    {
-      id: 4,
-      title: "My fourth Post",
-      dateTime: "April 04, 2024 11:01:24 AM",
-      body: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid quod, distinctio labore odit, beatae ipsum quo temporibus, delectus tempore tempora repellat expedita alias facilis. Odit vero numquam dolores iste itaque."
-
-    },
-    {
-      id: 5,
-      title: "My fifth Post",
-      dateTime: "April 04, 2024 11:01:24 AM",
-      body: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid quod, distinctio labore odit, beatae ipsum quo temporibus, delectus tempore tempora repellat expedita alias facilis. Odit vero numquam dolores iste itaque."
-
-    },
-  ])
+  const [posts, setPosts] = useState([])
 
 
 
@@ -61,6 +26,24 @@ function App() {
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   
+  useEffect(() => {
+    const fecthPosts = async() => {
+      try {
+        const response = await api.get("/posts");
+        setPosts(response.data);
+      } catch (error) {
+        if(error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers)
+        }else {
+          console.log(`Error: ${error.message}`)
+        }
+      }
+    };
+
+    fecthPosts();
+  }, []);
 
   useEffect(() => {
     const filteredResult = posts.filter((post) =>
@@ -73,24 +56,40 @@ function App() {
 
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const dateTime = format(new Date(), `MMMM dd, yyyy pp`)
 
-    const newPost = { id, title: postTitle, dateTime, body: postBody }
-    const allposts = [...posts, newPost]
-    setPosts(allposts)
-    setPostTitle('')
-    setPostBody('')
-    navigate('/')
+    const newPost = { id, title: postTitle, dateTime, body: postBody}
+
+    try {
+      const response =  await api.post("/posts", newPost)
+
+      const allposts = [...posts, response]
+      setPosts(allposts)
+      setPostTitle('')
+      setPostBody('')
+
+      navigate('/')
+
+    } catch (error) {
+      console.log(`Error: ${error.message}`)
+    }
   }
 
-  const handleDelete = (id) => {
-    const postList = posts.filter(post => post.id != id)
-    setPosts(postList)
-    navigate('/')
+  const handleDelete = async (id) => {
+
+    try {
+      await api.delete(`/posts/${id}`)
+      const postList = posts.filter(post => post.id != id)
+      setPosts(postList)
+      navigate('/')
+      
+    } catch (error) {
+      
+    }
   }
 
   return (

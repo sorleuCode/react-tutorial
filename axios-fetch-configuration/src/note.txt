@@ -1,0 +1,17 @@
+The PUT and PATCH methods are both HTTP methods used to update resources on a server, typically in a RESTful API context. However, they have different semantics and are used in different scenarios:
+
+PUT:
+
+The PUT method is used to update or replace an entire resource at a specific URI.
+When a client sends a PUT request to the server, it typically includes the full representation of the resource in the request body.
+The server then replaces the resource at the specified URI with the new representation provided in the request body.
+If the resource does not exist at the specified URI, the server may create a new resource with that URI.
+In summary, PUT is idempotent, meaning that performing the same PUT request multiple times has the same effect as performing it once.
+PATCH:
+
+The PATCH method is used to partially update a resource at a specific URI.
+When a client sends a PATCH request to the server, it typically includes only the changes to be applied to the resource, rather than the full representation.
+The server then applies the provided changes to the resource while leaving the rest of the resource unchanged.
+If the resource does not exist at the specified URI, the server may create a new resource with that URI.
+In contrast to PUT, PATCH is not necessarily idempotent. Performing the same PATCH request multiple times may result in different outcomes, depending on the initial state of the resource and the nature of the changes applied.
+In summary, PUT is used for full updates, where the client sends the entire updated representation of the resource, while PATCH is used for partial updates, where the client sends only the changes to be applied to the resource. Both methods are used for updating resources, but they have different semantics and are suitable for different scenarios.
