@@ -1,6 +1,8 @@
 import Feed from './Feed';
+import { useContext } from 'react';
+import DataContext from "./contexts/DataContext";
 
-const Home = ({ posts }) => {
+const Home = ({ posts, isLoading, fetcherror }) => {
     return (
         <main className="Home">
             {posts.length ? (
