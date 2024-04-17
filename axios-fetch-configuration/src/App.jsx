@@ -13,6 +13,7 @@ import api from "./api/post";
 import EditPost from "./EditPost";
 import useWindowSize from "../hooks/useWindowSize";
 import useAxiosFetch from "../hooks/useAxiosFetch";
+import {DataProvider} from "./contexts/DataContext";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -24,8 +25,9 @@ function App() {
   const [postBody, setPostBody] = useState("");
   const [editPostTitle, setEditPostTitle] = useState("");
   const [editPostBody, setEditPostBody] = useState("");
-  const {width} = useWindowSize();
-  const {data, fetchError, isLoading} = useAxiosFetch("http://localhost:4000/posts")
+  const { width } = useWindowSize();
+  const { data, fetchError, isLoading } = useAxiosFetch("http://localhost:2500/posts")
+
 
   //STEP 1
   // useEffect(() => {
@@ -54,7 +56,10 @@ function App() {
 
   useEffect(() => {
     setPosts(data)
+    
   }, [data])
+
+
 
   useEffect(() => {
     const filteredResults = posts.filter(
@@ -118,55 +123,57 @@ function App() {
 
   return (
     <div className="App">
-      <Header title="DLT Blogs" width={width} />
-      <Nav search={search} setsearch={setSearch} />
-      <Routes>
-        {/* <Route path="/" element={<Home posts={posts} />} /> */}
+      <DataProvider>
+        <Header title="DLT Blogs" width={width} />
+        <Nav search={search} setsearch={setSearch} />
+        <Routes>
+          {/* <Route path="/" element={<Home posts={posts} />} /> */}
 
-        {/* Step 3 */}
-        <Route path="/" element={
-        
-        <Home posts={searchResults} 
-          fetchError={fetchError}
-          isLoading={isLoading}
-        />} />
+          {/* Step 3 */}
+          <Route path="/" element={
 
-        {/* Step 1*/}
-        <Route
-          path="/post"
-          element={
-            <NewPost
-              handleSubmit={handleSubmit}
-              postTitle={postTitle}
-              setPostTitle={setPostTitle}
-              postBody={postBody}
-              setPostBody={setPostBody}
-            />
-          }
-        />
+            <Home posts={searchResults}
+              fetchError={fetchError}
+              isLoading={isLoading}
+            />} />
 
-        <Route
-          path="/edit/:id"
-          element={
-            <EditPost
-              posts={posts}
-              handleEdit={handleEdit}
-              editPostTitle={editPostTitle}
-              setEditPostTitle={setEditPostTitle}
-              editPostBody={editPostBody}
-              setEditPostBody={setEditPostBody}
-            />
-          }
-        />
+          {/* Step 1*/}
+          <Route
+            path="/post"
+            element={
+              <NewPost
+                handleSubmit={handleSubmit}
+                postTitle={postTitle}
+                setPostTitle={setPostTitle}
+                postBody={postBody}
+                setPostBody={setPostBody}
+              />
+            }
+          />
 
-        <Route
-          path="/post/:id"
-          element={<PostPage posts={posts} handleDelete={handleDelete} />}
-        />
-        <Route path="/about" element={<About />} />
-        <Route path="*" element={<Missing />} />
-      </Routes>
-      <Footer />
+          <Route
+            path="/edit/:id"
+            element={
+              <EditPost
+                posts={posts}
+                handleEdit={handleEdit}
+                editPostTitle={editPostTitle}
+                setEditPostTitle={setEditPostTitle}
+                editPostBody={editPostBody}
+                setEditPostBody={setEditPostBody}
+              />
+            }
+          />
+
+          <Route
+            path="/post/:id"
+            element={<PostPage posts={posts} handleDelete={handleDelete} />}
+          />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<Missing />} />
+        </Routes>
+      </DataProvider>
+        <Footer />
     </div>
   );
 }

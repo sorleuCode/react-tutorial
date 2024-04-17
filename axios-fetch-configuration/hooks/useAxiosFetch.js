@@ -3,8 +3,8 @@ import axios from "axios";
 
 const useAxiosFetch = (dataUrl) => {
   const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(null);
-  const [fetchError, setFetchError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
 
 
   useEffect(() => {
@@ -15,15 +15,15 @@ const useAxiosFetch = (dataUrl) => {
         setIsLoading(true);
 
         try {
-            const response = axios.get(url, {cancelToken: source.token});
+            const response = await axios.get(url, {cancelToken: source.token});
 
             if (isMounted) {
                 setData(response.data);
                 setFetchError(null);
             }
         } catch (error) {
-            if(!isMounted) {
-                setFetchError(err.message);
+            if(isMounted) {
+                setFetchError(error.message);
                 setData([])
             }
         } finally {
