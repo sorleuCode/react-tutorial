@@ -4,14 +4,14 @@ import DataContext from "./contexts/DataContext";
 
 
 
-const Home = ({posts ,isLoading, fetcherror }) => {
+const Home = () => {
 
-    const {searchResult, } = (useContext);
+    const {searchResults ,isLoading, fetcherror } = useContext(DataContext)
     return (
         <main className="Home">
             {isLoading && <p className ="statusMsg">Loading Posts...</p>}
             {!isLoading && fetcherror && <p className='statusMsg' style={{color: "red"}}>{fetcherror}</p>}
-            {!isLoading && !fetcherror && (posts.length ? <Feed posts={posts}/> : <p className='statusMsg'>No posts to</p>)}
+            {!isLoading && !fetcherror && (searchResults.length ? <Feed posts={searchResults}/> : <p className='statusMsg'>No posts to display</p>)}
         </main>
     )
 }
